@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 app.use(autoresRoutes);
-app.use(livrosRoutes);
+app.use(livrosRoutes)
 
 app.get("/", (request, response) => {
   return response.json({
