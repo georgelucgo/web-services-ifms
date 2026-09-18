@@ -167,6 +167,40 @@ Foram testados também casos de erro, como dados inválidos, recursos inexistent
 
 ---
 
+## Aula 06 — Consumo de APIs
+
+API de clientes que utiliza o **ViaCEP** para consultar endereços a partir do CEP.
+
+### Endpoints
+
+```text
+GET /enderecos/:cep
+POST /clientes
+GET /clientes
+```
+
+### Exemplo de consulta
+
+```text
+GET /enderecos/79002000
+```
+
+### Exemplo de cliente
+
+```json
+{
+  "nome": "George",
+  "email": "george@email.com",
+  "cep": "79002000"
+}
+```
+
+Ao cadastrar um cliente, a API consulta o ViaCEP para obter o endereço.
+
+A API possui tratamento para CEP inválido, CEP não encontrado e falha no serviço externo.
+
+---
+
 ## Como executar
 
 Em cada projeto, instale as dependências:
