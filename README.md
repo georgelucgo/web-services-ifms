@@ -201,7 +201,136 @@ A API possui tratamento para CEP inválido, CEP não encontrado e falha no servi
 
 ---
 
+## Aula 07 — Microsserviços e Comunicação entre Serviços
+
+Mini projeto utilizando dois microsserviços independentes: **Catálogo** e **Pedidos**.
+
+O serviço de **Catálogo** mantém os dados dos produtos e o serviço de **Pedidos** consulta o Catálogo por HTTP antes de criar um pedido.
+
+### Estrutura
+
+```text
+catalogo/
+pedidos/
+```
+
+Cada serviço possui seu próprio projeto, dependências, ponto de entrada e porta.
+
+### Catálogo
+
+Executa na porta:
+
+```text
+3001
+```
+
+### Endpoint
+
+```text
+GET /produtos/:id
+```
+
+### Respostas
+
+Produto encontrado:
+
+```text
+200 OK
+```
+
+Produto inexistente:
+
+```text
+404 Not Found
+```
+
+### Exemplo de produto
+
+```json
+{
+  "id": 1,
+  "nome": "Teclado",
+  "preco": 150,
+  "estoque": 10
+}
+```
+
+---
+
+### Pedidos
+
+Executa na porta:
+
+```text
+3000
+```
+
+### Endpoint
+
+```text
+POST /pedidos
+```
+
+### Exemplo de requisição
+
+```json
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+```
+
+O serviço de Pedidos utiliza `fetch` para consultar o Catálogo pela URL configurada na variável de ambiente.
+
+Quando a quantidade solicitada é maior que o estoque disponível, a API retorna:
+
+```text
+409 Conflict
+```
+
+Quando o Catálogo está indisponível, a falha é tratada e pode retornar:
+
+```text
+502 Bad Gateway
+```
+
+ou
+
+```text
+504 Gateway Timeout
+```
+
+A comunicação entre os serviços possui timeout para evitar espera indefinida.
+
+### Variáveis de ambiente
+
+Cada microsserviço possui um arquivo `.env.example` com as configurações necessárias.
+
+No serviço de Pedidos, a URL do Catálogo pode ser configurada pela variável:
+
+```text
+CATALOGO_URL=http://localhost:3001
+```
+
+### Testes no Thunder Client
+
+Foram previstos testes para:
+
+```text
+Catálogo com produto existente → 200
+Catálogo com produto inexistente → 404
+Pedidos com quantidade válida → 201
+Pedidos com estoque insuficiente → 409
+Pedidos com Catálogo desligado → 502 ou 504
+```
+
+Também deve ser testada a situação em que o Catálogo fica indisponível para verificar o tratamento da falha de comunicação.
+
+---
+
 ## Como executar
+
+### Aula 02 até Aula 06
 
 Em cada projeto, instale as dependências:
 
@@ -216,6 +345,26 @@ npm run dev
 ```
 
 A API será executada na porta `3000`.
+
+### Aula 07 — Microsserviços
+
+Instale as dependências separadamente em cada serviço:
+
+```bash
+cd catalogo
+npm install
+npm run dev
+```
+
+Em outro terminal:
+
+```bash
+cd pedidos
+npm install
+npm run dev
+```
+
+O Catálogo será executado na porta `3001` e Pedidos na porta `3000`.
 
 ## Observação
 
